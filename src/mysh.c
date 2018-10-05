@@ -19,7 +19,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <assert.h>
-
+#include <unistd.h>
+#include <sys/types.h>
 #include <errno.h>
 
 int main()
@@ -46,8 +47,22 @@ int main()
         comm_entry->err(ret);
       }
     } else if (does_exefile_exists(argv[0])) {
-      // TODO: Execute the program of argv[0].
-    } else {
+      pid_t pid;
+      pid = fork();
+      if(pid<0){
+          exit(-1);
+      }
+      else if(pid == 0){
+            if(execvp(argv[0],argv) == -1);
+            {
+                exit(EXIT_FAILURE);
+            }
+      }
+      else{
+          pid = wait(NULL);
+      }
+
+	} else {
       assert(comm_entry == NULL);
       fprintf(stderr, "%s: command not found.\n", argv[0]);
     }

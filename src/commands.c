@@ -13,6 +13,11 @@
  *********************************************************************/
 #include "commands.h"
 #include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
 
 static struct command_entry commands[] =
 {
@@ -30,16 +35,24 @@ static struct command_entry commands[] =
 
 struct command_entry* fetch_command(const char* command_name)
 {
-  // TODO: Fill it.
 
-  return NULL;
+  if(strcmp(command_name, "pwd") == 0)
+      return &commands[0];
+  else if(strcmp(command_name, "cd") == 0)
+      return &commands[1];
+  else
+      return NULL;
 }
 
 int do_pwd(int argc, char** argv)
 {
-  // TODO: Fill it.
-
-  return -1;
+  char pwd[1024];
+  getcwd(pwd,1024);
+  printf("%s\n",pwd);
+  fflush(stdout);
+  return 0;
+  if(getcwd(pwd,1024))
+      return -1;
 }
 
 void err_pwd(int err_code)
@@ -49,12 +62,40 @@ void err_pwd(int err_code)
 
 int do_cd(int argc, char** argv)
 {
-  // TODO: Fill it.
+  int return_stat;
+  struct stat info;
+  char *filename;
 
-  return -1;
+  if(argc != 2){
+      if(argc == 1)
+          chdir(getenv("HOME"));
+      printf("input correct usage");
+      exit(0);
+  }
+  if((return_stat = stat(argv[1],&info)) == -1)
+      return 1;
+
+  if(S_ISDIR(info.st_mode)){
+      if(argc == 2){
+          if(chdir(argv[1]))
+              return 1;
+      }
+      return 0;
+  }
+  else{
+      return 2;
+  }
+
 }
 
 void err_cd(int err_code)
 {
-  // TODO: Fill it.
+ int err = err_code;
+  if(err ==1)
+      fprintf(stderr, "cd: no such file or directory\n");
+  else if(err ==2)
+      fprintf(stderr, "cd: not a directory\n");
+  else
+      fprintf(stderr, "cd: Invalid input\n");
+
 }
