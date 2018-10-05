@@ -11,10 +11,93 @@
  * GNU General Public License for more details.
  *
  *********************************************************************/
+
 #include "fs.h"
+#include <stdio.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <string.h>
+
+char* findbin(const char*path)
+{
+    char *newpath=(char*)malloc(sizeof(char)*(150));
+    memset(newpath, 0, 150);
+    char *ptr= strstr(path,"/bin");
+    if(ptr == NULL){
+        strcat(newpath,"/bin/");
+        strcat(newpath,path);
+        return newpath;
+    }
+}
+
+char* findusr(const char*path)
+{
+    char*newpath=(char*)malloc(sizeof(char)*(150));
+    memset(newpath, 0, 150);
+    char *ptr= strstr(path,"/usr/bin");
+    if(ptr ==NULL){
+        strcat(newpath,"/usr/bin/");
+        strcat(newpath,path);
+        return newpath;
+    }
+}
 
 int does_exefile_exists(const char* path)
 {
   // TODO: Fill it!
-  return -1;
+  struct stat minfo;
+  int *pathtemp;//findbin , findusr 함수 메모리 할당하는 포인터 변수
+  int return_stat;
+  if((return_stat = stat(path,&minfo)) == -1){    // 기존 path가 존재하지 않는 경우 
+      char *binpath=(char*)malloc(sizeof(char)*(150));
+      memset(binpath, 0, 150);
+      pathtemp = findbin(path);
+      strncpy(binpath, pathtemp,strlen(pathtemp)); //binpath 생성
+      free(pathtemp);
+      return_stat = stat(binpath,&minfo);
+      free(binpath);
+      if(return_stat == -1)
+      {
+        char *usrpath=(char*)malloc(sizeof(char)*(150));
+        memset(usrpath, 0, 150);
+        pathtemp = findusr(path);
+        strncpy(usrpath,pathtemp,strlen(pathtemp));
+        free(pathtemp);
+        return_stat = stat(usrpath,&minfo);
+        free(usrpath);
+        if(return_stat == -1){
+            return 0;
+       }
+        if(S_ISREG(minfo.st_mode)){
+            return 1;
+        }
+        else if(S_ISDIR(minfo.st_mode)){
+            return 1;
+        }
+        else{
+            return 0;
+        }
+      }
+      if(S_ISREG(minfo.st_mode)){
+          return 1;
+      }
+      else if(S_ISDIR(minfo.st_mode)){
+          return 1;
+      }
+      else
+          return 0;
+ }
+
+    if(S_ISREG(minfo.st_mode)){
+        return 1;
+    }
+    else if(S_ISDIR(minfo.st_mode)){
+        return 1;
+    }
+    else
+        return 0;
+
 }
+
