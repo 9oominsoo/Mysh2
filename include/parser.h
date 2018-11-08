@@ -17,5 +17,7 @@
 void parse_command(const char* input,
                    int* argc, char*** argv);
 
+void pipe_parse(char *input, char *first_exe, char *second_exe);
+
 #endif // PARSER_H_
 

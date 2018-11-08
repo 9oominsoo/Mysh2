@@ -101,3 +101,27 @@ int does_exefile_exists(const char* path)
 
 }
 
+char make_path(char **argv)
+{
+    char *path = malloc(strlen("/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"));
+    strcpy(path, "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin");
+    char *token;
+    token = strtok(path,":");
+    while(token!=NULL)
+    {
+        char *realpath = (char *)malloc(sizeof(char) *25);
+        memset(realpath, 0, 25);
+
+        strcat(realpath, token);
+        strcat(realpath, "/");
+        strcat(realpath, argv);
+        if(!access(realpath,X_OK)){
+            strcpy(argv[0], realpath);
+            fprintf(stderr,"make_path output is : %s\n", argv[0]);
+            return realpath;
+        }
+        token = strtok(NULL,":");
+    }
+    free(path);
+}                                                 
+

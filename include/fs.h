@@ -15,5 +15,5 @@
 #define FS_H_
 
 int does_exefile_exists(const char* path);
-
+char make_path(char **argv);
 #endif // FS_H_

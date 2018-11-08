@@ -66,3 +66,40 @@ void parse_command(const char* input,
     free(letter);
 }
 
+void pipe_parse(char *input, char *first_exe, char *second_exe)
+{
+     char * path = (char *)malloc(sizeof(char)*strlen(input));
+     char * client_command = (char *)malloc(sizeof(char)*125);
+     char * server_command = (char *)malloc(sizeof(char)*125);
+     strcpy(path, input);
+     fprintf("path: %s\n", path);
+     int i = 0;
+     char *pct;
+     char *ret;
+     client_command = strtok(path, "|");
+     server_command = strtok(NULL, "|");
+     fprintf("client: %s\n", client_command);
+     strcat(client_command,"\0");
+     fprintf("server: %s\n", server_command); 
+     strcat(server_command,"\0");
+     strcpy(first_exe, client_command);
+     strcpy(second_exe, server_command);
+     /*
+     pct = strtok(fore, " \n");
+     while(pct != NULL && i<2)
+     {
+         command[i] = pct;
+         pct=strtok(NULL," \n");
+         i++;
+     }
+     pct = strtok(back," \n");
+     while(pct != NULL && i<4)
+     {
+         command[i] = pct;
+         pct=strtok(NULL," \n");
+         i++;
+     }
+    */
+}
+
+
