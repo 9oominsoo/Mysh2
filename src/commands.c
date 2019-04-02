@@ -69,8 +69,6 @@ struct command_entry* fetch_command(const char* command_name)
       return &commands[0];
   else if(strcmp(command_name, "cd") == 0)
       return &commands[1];
- // else if(strcmp(command_name, "kill") == 0)
- //	  return &commands[2];
   else if(strcmp(command_name, "fg") == 0)
 	  return &commands[3];
   else
@@ -90,7 +88,6 @@ int do_pwd(int argc, char** argv)
 
 void err_pwd(int err_code)
 {
-  // TODO: Fill it.
 }
 
 int do_cd(int argc, char** argv)
@@ -214,59 +211,7 @@ void bg_process(int argc, char **argv)
     }   
 }       
 */
-/*
-void pipe_process(char *command, int category)
-{
-    //parse full command into two command ( | )
-    int i=0;
-    int RorW = category; //select child or parent execution
-    char *path = (char *)malloc(sizeof(char)*strlen(command));
-    char *send_command = (char *)malloc(sizeof(char)*125);
-    char *receive_command = (char *)malloc(sizeof(char)*125);
-    char *send[1];
-    send[0] = NULL; send[1] = NULL; 
-    char *receive[1];
-    receive[0] = NULL; receive[1] = NULL;
-    strcpy(path, command);
-    pipe_parse(path, send_command, receive_command);
-    printf("send command: %s\n", send_command);
-    printf("receive command: %s\n", receive_command);
-    //parse command[0] and command 
-    char *pct;
-    pct = strtok(send_command, " \n");
-    while(pct != NULL && i<2)
-    {
-        send[i] = pct;
-        pct=strtok(NULL," \n");
-        i++;
-    }
-    i =0;
-    pct = strtok(receive_command," \n");
-    while(pct != NULL && i<2)
-    {
-        receive[i] = pct;
-        pct=strtok(NULL," \n");
-        i++;
-    }
 
-    //make command path
-    make_path(send);
-    make_path(receive);
-
-    if(RorW == 1){
-        //execute write(child) process
-        if(execvp(send[0], send) == -1)                           
-			   fprintf(stderr, " there is no writing command..\n");
-    }else{
-        //execute read(parent) process
-        for(int z=0; z<2; z++)
-            printf("receive command is : %s\n", receive[z]);
-        if(execvp(receive[0], receive) == -1)
-            fprintf(stderr, " there is no reading command..\n");
-    }
-    
-}
-*/
 void _pipe(char *realcommand)
 {
 	char *server_com = (char *)malloc(sizeof(char)*25);
